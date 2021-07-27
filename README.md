@@ -2,6 +2,7 @@
 [![\[Telegram\] sobirjonovs](https://img.shields.io/badge/Telegram-blue.svg?logo=telegram)](https://t.me/sobirjonovs)  
 ## Bu qanaqa dastur?
 p2p to'lovlarni avtomatlashtirish uchun dastur. Dastur **Payme** apidan foydalanadi.
+
 ## 1. Dastur ishlashi uchun talablar
 - **>=** PHP v7.4
 - **>=** Composer v1.10.1
@@ -80,6 +81,9 @@ Bu parametr ham `from` bilan bir xil. Faqat bu ko'rsatilgan sanagacha bo'lgan tr
 Defolt qiymati `time`
 6. **offset**
 Defolt qiymati 0
+
+## Namunalar
+API dan foydalanish namunalar `index.php` faylida ham yozilgan.
 
 ## Eslatma!
 Dastur va dastur uchun qo'llanma **Sanjarbek Sobirjonov** (telegram @sobirjonovs) tomonidan yozildi. Agar dasturda yoki qo'llanmada qandaydir xatolik topsangiz, **pull request** yoki murojaat qilishingizdan mamnun bo'lamiz. 
