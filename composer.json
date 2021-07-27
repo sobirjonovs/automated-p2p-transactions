@@ -1,0 +1,14 @@
+{
+  "name": "sobirjonovs/payme-payment",
+  "version": "1.0.0",
+  "description": "Manage payments via Payme automatically",
+  "autoload": {
+    "psr-4": {
+      "App\\": ""
+    }
+  },
+  "require": {
+    "ext-curl": "*",
+    "ext-json": "*"
+  }
+}
