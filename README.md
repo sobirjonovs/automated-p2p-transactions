@@ -19,6 +19,7 @@ $payme = new Api();
 $payme->setCredentials(['login' => 'paymega ulangan telefon raqam', 'password' => 'paymedagi parol']);  
 $payme->login()->sendActivationCode();
 ```
+### DIQQAT! Kabinetga faqat bir marta, "MUHIM" ma'lumotlarni olish uchun kiramiz. Undan so'ng kirish shart bo'lmaydi. Qaysi "MUHIM" ma'lumotlar nazarda tutilayotgani pastda keltirilgan. Diqqat bilan o'qing.  
 `setCredentials([])` metodi orqali **Payme** akkauntimizning login parollarini belgilashimiz mumkin. Bu metodga **massiv** yuborish kerak. Massivda **login** va **parol** kalitlari bo'lishi shart. **Login** - bu sizning **Payme**dagi nomeringiz, nomer **901234564** formatda yozilishi kerak. **Parol** esa o'z holicha yoziladi. Ushbu ma'lumotlarni to'g'ri kiritganingizdan so'ng, sizga Paymedan telefon raqamingizga kod keladi. Ushbu kodni `activate` metodi orqali kiritasiz:
 ```php
 <?php
