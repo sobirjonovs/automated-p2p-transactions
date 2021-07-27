@@ -1,5 +1,7 @@
 [![\[Telegram\] tutorialsgroup](https://img.shields.io/badge/Telegram-Group-blue.svg?logo=telegram)](https://t.me/tutorialsgroup)
-[![\[Telegram\] sobirjonovs](https://img.shields.io/badge/Telegram-blue.svg?logo=telegram)](https://t.me/sobirjonovs)
+[![\[Telegram\] sobirjonovs](https://img.shields.io/badge/Telegram-blue.svg?logo=telegram)](https://t.me/sobirjonovs)  
+## Bu qanaqa dastur?
+p2p to'lovlarni avtomatlashtirish uchun dastur. Dastur **Payme** apidan foydalanadi.
 ## 1. Dastur ishlashi uchun talablar
 - **>=** PHP v7.4
 - **>=** Composer v1.10.1
