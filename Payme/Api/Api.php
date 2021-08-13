@@ -238,15 +238,13 @@ class Api extends BaseApi
     /**
      * @param string $comment
      * @param int $amount
-     * @return false|int|mixed|null
+     * @return array
      */
     public function findByComment(string $comment, int $amount)
     {
-        $filter = array_filter($this->cheques, function ($cheque) use ($amount, $comment) {
+        return array_filter($this->cheques, function ($cheque) use ($amount, $comment) {
             return $cheque['description'] == $comment && $cheque['amount'] == $amount;
         });
-
-        return !empty($filter) ? $filter : false;
     }
 
     /**
