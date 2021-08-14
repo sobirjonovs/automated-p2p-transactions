@@ -3,6 +3,7 @@
 namespace App\Payme\Api;
 
 use App\Api\Api as BaseApi;
+use App\Payme\Card;
 use App\Session\Session;
 use DateTime;
 use DateTimeZone;
@@ -142,7 +143,6 @@ class Api extends BaseApi
 
     /**
      * @param array $sort
-     * @param bool $chainable
      * @return false|int|mixed|Api
      */
     public function getAllCheques(array $sort = [])
@@ -176,13 +176,20 @@ class Api extends BaseApi
     }
 
     /**
-     * @return false|int|mixed
+     * @return Card[]
      */
-    public function getMyCards()
+    public function getMyCards(): array
     {
         $this->login(["Device: $this->device"]);
         $this->post(self::API_GET_CARDS_URL, [], ["API-SESSION: $this->api_session", "Device: $this->device"]);
-        return $this->getContent()['result']['cards'];
+
+        return array_map(function ($card) {
+            return new Card(
+                $card['_id'], $card['name'], $card['number'],
+                $card['expire'], $card['active'], $card['owner'],
+                $card['balance'], $card['main'], $card['date']
+            );
+        }, $this->getContent()['result']['cards']);
     }
 
     /**
@@ -240,7 +247,7 @@ class Api extends BaseApi
      * @param int $amount
      * @return array
      */
-    public function findByComment(string $comment, int $amount)
+    public function findByComment(string $comment, int $amount): array
     {
         return array_filter($this->cheques, function ($cheque) use ($amount, $comment) {
             return $cheque['description'] == $comment && $cheque['amount'] == $amount;
