@@ -2,7 +2,7 @@
 
 namespace App\Payme;
 
-class Card
+class Card extends Formatter
 {
     /**
      * Defines card id
@@ -139,7 +139,7 @@ class Card
      */
     public function getBalance(): string
     {
-        return number_format($this->balance / 100, 2, '.', ',');
+        return $this->formatMoney($this->balance);
     }
 
     /**
@@ -151,12 +151,11 @@ class Card
     }
 
     /**
-     * @param string $format
      * @return string
      */
-    public function getDate(string $format = "Y/m/d H:i:s"): string
+    public function getDate(): string
     {
-        return date($format, round($this->date / 1000));
+        return $this->formatDate($this->date);
     }
 
     /**

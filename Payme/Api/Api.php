@@ -4,6 +4,8 @@ namespace App\Payme\Api;
 
 use App\Api\Api as BaseApi;
 use App\Payme\Card;
+use App\Payme\Cheque;
+use App\Payme\DebugException;
 use App\Session\Session;
 use DateTime;
 use DateTimeZone;
@@ -83,119 +85,168 @@ class Api extends BaseApi
      * @param array|string $postfields
      * @param array $headers
      * @return BaseApi
+     * @throws DebugException
      */
     protected function post(string $url, $postfields, array $headers = []): BaseApi
     {
-        $headers = array_merge([
-            'Content-Type: text/plain',
-            'Accept: */*',
-            'Connection: keep-alive'
-        ], $headers);
-        $params['method'] = $url;
-        $params['params'] = $postfields;
-        $response = parent::post(self::ENDPOINT_URL . $url, json_encode($params), $headers);
-        $this->api_session = $this->getApiSession($response);
-        return $response;
+        try {
+            $headers = array_merge([
+                'Content-Type: text/plain',
+                'Accept: */*',
+                'Connection: keep-alive'
+            ], $headers);
+            $params['method'] = $url;
+            $params['params'] = $postfields;
+            $response = parent::post(self::ENDPOINT_URL . $url, json_encode($params), $headers);
+            $this->api_session = $this->getApiSession($response);
+            return $response;
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
     }
 
     /**
      * @param array $headers
      * @return Api
+     * @throws DebugException
      */
     public function login(array $headers = []): Api
     {
-        $this->post(self::API_LOGIN_URL, $this->credentials, $headers);
-        $this->is_active_session = (bool)$this->device ?? false;
-        return $this;
+        try {
+            $this->post(self::API_LOGIN_URL, $this->credentials, $headers);
+            $this->is_active_session = (bool)$this->device ?? false;
+            return $this;
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
     }
 
     /**
      * @param string $code
      * @return Api
+     * @throws DebugException
      */
     public function activate(string $code): Api
     {
-        $this->post(self::API_SESSION_ACTIVATE_URL, ['code' => $code, 'device' => true], ["API-SESSION: $this->api_session"]);
-        return $this;
+        try {
+            $this->post(self::API_SESSION_ACTIVATE_URL, ['code' => $code, 'device' => true], ["API-SESSION: $this->api_session"]);
+            return $this;
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
     }
 
     /**
      * @return Api
+     * @throws DebugException
      */
     public function sendActivationCode(): Api
     {
-        $this->post(self::API_SEND_ACTIVATION_CODE, [], ["API-SESSION: $this->api_session"]);
-        return $this;
+        try {
+            $this->post(self::API_SEND_ACTIVATION_CODE, [], ["API-SESSION: $this->api_session"]);
+            return $this;
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
     }
 
     /**
      * @return Api
+     * @throws DebugException
      */
     public function registerDevice(): Api
     {
-        $this->post(self::API_REGISTER_DEVICE_URL, [
-            'display' => self::DEVICE_NAME,
-            'type' => 2
-        ], ["API-SESSION: $this->api_session"]);
-        $this->device = "{$this->getContent()['result']['_id']}; {$this->getContent()['result']['key']};";
-        return $this;
+        try {
+            $this->post(self::API_REGISTER_DEVICE_URL, [
+                'display' => self::DEVICE_NAME,
+                'type' => 2
+            ], ["API-SESSION: $this->api_session"]);
+            $this->device = "{$this->getContent()['result']['_id']}; {$this->getContent()['result']['key']};";
+            return $this;
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
     }
 
     /**
      * @param array $sort
-     * @return false|int|mixed|Api
+     * @return Cheque[]
+     * @throws DebugException
      */
-    public function getAllCheques(array $sort = [])
+    public function getAllCheques(array $sort = []): array
     {
-        $sort = $sort ?: [
-            'count' => 20,
-            'group' => 'time'
-        ];
-        $this->login(["Device: $this->device"]);
-        $this->post(self::API_CHEQUE_URL, $sort, ["API-SESSION: $this->api_session", "Device: $this->device"]);
-        return $this->getContent()['result']['cheques'];
+        try {
+            $sort = $sort ?: [
+                'count' => 90,
+                'group' => 'time'
+            ];
+            $this->login(["Device: $this->device"]);
+            $this->post(self::API_CHEQUE_URL, $sort, ["API-SESSION: $this->api_session", "Device: $this->device"]);
+
+            return array_map(function ($cheque) {
+                return new Cheque(...array_values(array_slice($cheque, 0, 17)));
+            }, $this->getContent()['result']['cheques']);
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
     }
 
     /**
-     * @return false|int|mixed|null
+     * @return Cheque[]
+     * @throws DebugException
      */
-    public function getCheques()
+    public function getCheques(): array
     {
-        return $this->cheques;
+        try {
+            return $this->cheques;
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
     }
 
     /**
      * Chainable cheques
      * @param array $sort
      * @return $this
+     * @throws DebugException
      */
     public function cheques(array $sort = []): Api
     {
-        $this->cheques = $this->getAllCheques($sort);
-        return $this;
+        try {
+            $this->cheques = $this->getAllCheques($sort);
+            return $this;
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
     }
 
     /**
      * @return Card[]
+     * @throws DebugException
      */
     public function getMyCards(): array
     {
-        $this->login(["Device: $this->device"]);
-        $this->post(self::API_GET_CARDS_URL, [], ["API-SESSION: $this->api_session", "Device: $this->device"]);
+        try {
+            $this->login(["Device: $this->device"]);
+            $this->post(self::API_GET_CARDS_URL, [], ["API-SESSION: $this->api_session", "Device: $this->device"]);
 
-        return array_map(function ($card) {
-            return new Card(
-                $card['_id'], $card['name'], $card['number'],
-                $card['expire'], $card['active'], $card['owner'],
-                $card['balance'], $card['main'], $card['date']
-            );
-        }, $this->getContent()['result']['cards']);
+            return array_map(function ($card) {
+                return new Card(
+                    $card['_id'], $card['name'], $card['number'],
+                    $card['expire'], $card['active'], $card['owner'],
+                    $card['balance'], $card['main'], $card['date']
+                );
+            }, $this->getContent()['result']['cards']);
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
     }
 
     /**
      * @param string $card_id
      * @param array $sort
      * @return $this
+     * @throws DebugException
      */
     public function selectCard(string $card_id, array $sort = []): Api
     {
@@ -214,44 +265,26 @@ class Api extends BaseApi
                     ]
             ]);
             return $this;
-        } catch (Exception $exception) {
-            echo $this->getExceptionMessage($exception);
-            die();
-        } catch (Throwable $throwable) {
-            echo $this->getExceptionMessage($throwable);
-            die();
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
         }
-    }
-
-    /**
-     * @param $exception
-     * @return string
-     */
-    private function getExceptionMessage($exception): string
-    {
-        $message = "<b>Xatolik matni:</b> ";
-        $message .= $exception->getMessage();
-        $message .= "<br><b>Xatolik kodi:</b>: ";
-        $message .= $exception->getCode();
-        $message .= "<br><b>Xatolik kelib chiqqan qator:</b>: ";
-        $message .= $exception->getLine();
-        $message .= "<br><b>Xatolik kelib chiqqan fayl:</b>: ";
-        $message .= $exception->getFile();
-        $message .= "<br><b>Xatolik izi:</b>: ";
-        $message .= $exception->getTraceAsString();
-        return $message;
     }
 
     /**
      * @param string $comment
      * @param int $amount
      * @return array
+     * @throws DebugException
      */
     public function findByComment(string $comment, int $amount): array
     {
-        return array_filter($this->cheques, function ($cheque) use ($amount, $comment) {
-            return $cheque['description'] == $comment && $cheque['amount'] == $amount;
-        });
+        try {
+            return array_filter($this->cheques, function ($cheque) use ($amount, $comment) {
+                return $cheque->hasPaymentWithComment($comment, $amount);
+            });
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
     }
 
     /**
@@ -259,7 +292,11 @@ class Api extends BaseApi
      */
     public function date(): DateTime
     {
-        return new DateTime('now', new DateTimeZone(self::API_TIMEZONE));
+        try {
+            return new DateTime('now', new DateTimeZone(self::API_TIMEZONE));
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
     }
 
     /**
@@ -293,27 +330,42 @@ class Api extends BaseApi
     /**
      * @param BaseApi $api
      * @return mixed
+     * @throws DebugException
      */
     public function getApiSession(BaseApi $api)
     {
-        return $api->getHeader($api->getContent(true))['api-session'];
+        try {
+            return $api->getHeader($api->getContent(true))['api-session'];
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
     }
 
     /**
      * @param $property
      * @param $value
+     * @throws DebugException
      */
     public function __set($property, $value)
     {
-        $this->session->store($property, $value);
+        try {
+            $this->session->store($property, $value);
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
     }
 
     /**
      * @param $property
      * @return mixed|null
+     * @throws DebugException
      */
     public function __get($property)
     {
-        return $this->session->get($property);
+        try {
+            return $this->session->get($property);
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
     }
 }
