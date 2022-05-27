@@ -1,5 +1,6 @@
 [![\[Telegram\] tutorialsgroup](https://img.shields.io/badge/Telegram-Group-blue.svg?logo=telegram)](https://t.me/tutorialsgroup)
-[![\[Telegram\] sobirjonovs](https://img.shields.io/badge/Telegram-blue.svg?logo=telegram)](https://t.me/sobirjonovs)  
+[![\[Telegram\] sobirjonovs](https://img.shields.io/badge/Telegram-blue.svg?logo=telegram)](https://t.me/sobirjonovs)
+![](https://img.shields.io/badge/status-WORKING-success)
 ## Bu qanaqa dastur?
 p2p to'lovlarni avtomatlashtirish uchun dastur. Dastur **Payme** apidan foydalanadi.
 
