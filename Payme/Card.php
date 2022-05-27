@@ -8,7 +8,7 @@ class Card extends Formatter
      * Defines card id
      * @property $id
      */
-    private int $id;
+    private string $id;
     /**
      * Defines card name
      * @property $name
@@ -64,7 +64,7 @@ class Card extends Formatter
      * @param int $date
      */
     public function __construct(
-        int $id,
+        string $id,
         string $name,
         string $number,
         int $expire,
