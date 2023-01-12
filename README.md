@@ -1,4 +1,4 @@
-[![\[Telegram\] tutorialsgroup](https://img.shields.io/badge/Telegram-Group-blue.svg?logo=telegram)](https://t.me/tutorialsgroup)
+[![\[Telegram\] tutorialsgroup](https://img.shields.io/badge/Telegram-Group-blue.svg?logo=telegram)](https://t.me/todaysobirjonov)
 [![\[Telegram\] sobirjonovs](https://img.shields.io/badge/Telegram-blue.svg?logo=telegram)](https://t.me/sobirjonovs)
 ![](https://img.shields.io/badge/status-ACTIVE-success)
 ## Bu qanaqa dastur?
