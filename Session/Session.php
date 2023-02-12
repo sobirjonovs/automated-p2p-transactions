@@ -22,7 +22,7 @@ class Session
      */
     public function start()
     {
-        if(session_status() != PHP_SESSION_ACTIVE){
+        if(session_status() == PHP_SESSION_DISABLED){
             session_start();
         }
     }
