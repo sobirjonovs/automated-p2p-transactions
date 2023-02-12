@@ -335,7 +335,7 @@ class Api extends BaseApi
     public function getApiSession(BaseApi $api)
     {
         try {
-            return $api->getHeader($api->getContent(true))['api-session'];
+            return $api->getHeader($api->getContent(true))['API-SESSION'];
         } catch (Exception | Throwable $exception) {
             throw new DebugException($exception);
         }
