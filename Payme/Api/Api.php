@@ -335,7 +335,26 @@ class Api extends BaseApi
     public function getApiSession(BaseApi $api)
     {
         try {
-            return $api->getHeader($api->getContent(true))['API-SESSION'];
+            return $this->getHeaderKey('api-session');
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
+    }
+
+    /**
+     * @param string $key
+     * @return mixed|string
+     * @throws DebugException
+     */
+
+    public function getHeaderKey(string $key)
+    {
+        try {
+            $result = array_change_key_case($this->getHeader($this->getContent(true)));
+            if (isset($result[$key])){
+                return $result[$key];
+            }
+            return '';
         } catch (Exception | Throwable $exception) {
             throw new DebugException($exception);
         }
