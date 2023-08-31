@@ -234,9 +234,8 @@ class Api extends BaseApi
 
             if (!isset($this->getContent()['error'])){
                 return ['cheque_id' => $this->getContent()['result']['cheque']['_id']];
-            }else{
-                return ['error_message' => $this->getContent()['error']['message']];
             }
+            return ['error_message' => $this->getContent()['error']['message']];
         } catch (Exception | Throwable $exception) {
             throw new DebugException($exception);
         }
@@ -280,14 +279,11 @@ class Api extends BaseApi
             $this->login(["Device: $this->device"]);
             $this->post(self::API_CHEQUE_PAY_URL, $sort, ["API-SESSION: $this->api_session", "Device: $this->device"]);
 
-            var_dump($this->getContent());
-
-//            if (isset($this->getContent()['result']['cheque'])){
-//                return ['cheque_id' => $this->getContent()['result']['method']['_id']];
-//            }else{
-//                return ['result' => false];
-//            }
-            return [];
+            if (!isset($this->getContent()['error'])){
+                return ['cheque_id' => $this->getContent()['result']['cheque']['_id']];
+            }else{
+                return ['error_message' => $this->getContent()['error']['message']];
+            }
         } catch (Exception | Throwable $exception) {
             throw new DebugException($exception);
         }
