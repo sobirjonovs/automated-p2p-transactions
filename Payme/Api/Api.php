@@ -31,7 +31,13 @@ class Api extends BaseApi
         API_SEND_ACTIVATION_CODE = "sessions.get_activation_code",
         API_REGISTER_DEVICE_URL = "devices.register",
         API_CHEQUE_URL = 'cheque.get_all',
-        API_GET_CARDS_URL = 'cards.get_all';
+        API_CHEQUE_GET_URL = 'cheque.get',
+        API_CHEQUE_VERIFY_URL = 'cheque.verify',
+        API_CHEQUE_CREATE_URL = 'cheque.create',
+        API_CHEQUE_PAY_URL = 'cheque.pay',
+        API_GET_CARDS_URL = 'cards.get_all',
+        API_GET_CARDS_P2P_INFO_URL = 'cards.get_p2p_info',
+        API_P2P_CREATE_URL = 'p2p.create';
 
     /**
      * Config
@@ -215,6 +221,97 @@ class Api extends BaseApi
         try {
             $this->cheques = $this->getAllCheques($sort);
             return $this;
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
+    }
+
+    public function chequeCreate(array $sort = []): array
+    {
+        try {
+            $this->login(["Device: $this->device"]);
+            $this->post(self::API_CHEQUE_CREATE_URL, $sort, ["API-SESSION: $this->api_session", "Device: $this->device"]);
+
+            if (!isset($this->getContent()['error'])){
+                return ['cheque_id' => $this->getContent()['result']['cheque']['_id']];
+            }
+            return ['error_message' => $this->getContent()['error']['message']];
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
+    }
+
+    public function p2pCreate(array $sort = []): array
+    {
+        try {
+            $this->login(["Device: $this->device"]);
+            $this->post(self::API_P2P_CREATE_URL, $sort, ["API-SESSION: $this->api_session", "Device: $this->device"]);
+            if (!isset($this->getContent()['error'])){
+                return ['cheque_id' => $this->getContent()['result']['cheque']['_id']];
+            }else{
+                return ['error_message' => $this->getContent()['error']['message']];
+            }
+
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
+    }
+
+    public function chequeVerify(array $sort = []): array
+    {
+        try {
+            $this->login(["Device: $this->device"]);
+            $this->post(self::API_CHEQUE_VERIFY_URL, $sort, ["API-SESSION: $this->api_session", "Device: $this->device"]);
+
+            if (isset($this->getContent()['result'])){
+                return ['method' => $this->getContent()['result']['method']];
+            }
+            return ['message' => false];
+
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
+    }
+
+    public function chequePay(array $sort = []): array
+    {
+        try {
+            $this->login(["Device: $this->device"]);
+            $this->post(self::API_CHEQUE_PAY_URL, $sort, ["API-SESSION: $this->api_session", "Device: $this->device"]);
+
+            if (!isset($this->getContent()['error'])){
+                return ['cheque_id' => $this->getContent()['result']['cheque']['_id']];
+            }else{
+                return ['error_message' => $this->getContent()['error']['message']];
+            }
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
+    }
+
+    public function getCardInfo(array $sort = []): array
+    {
+        try {
+
+            $this->login(["Device: $this->device"]);
+            $this->post(self::API_GET_CARDS_P2P_INFO_URL, $sort, ["API-SESSION: $this->api_session", "Device: $this->device"]);
+
+            return $this->getContent();
+//            return array_map(function ($cheque) {
+//                return new Cheque(...array_values(array_slice($cheque, 0, 17)));
+//            }, $this->getContent()['result']['cheques']);
+        } catch (Exception | Throwable $exception) {
+            throw new DebugException($exception);
+        }
+    }
+
+    public function getCheque(array $sort = []): array
+    {
+        try {
+            $this->login(["Device: $this->device"]);
+            $this->post(self::API_CHEQUE_GET_URL, $sort, ["API-SESSION: $this->api_session", "Device: $this->device"]);
+
+            return $this->getContent();
         } catch (Exception | Throwable $exception) {
             throw new DebugException($exception);
         }
